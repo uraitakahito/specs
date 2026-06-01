@@ -9,16 +9,19 @@
 - `main` は本家ミラー。**翻訳を commit しない**。
 - `develop → main` の逆流 (PR/merge) は**しない**。
 - 翻訳は `develop`(既定ブランチ)に積む。
+- `main` は**ローカル限定**。`origin`(fork)へ push しない — fork へ main を
+  push すると継承 `publish.yml`(main トリガ)が英語を gh-pages に publish し、
+  GitHub Pages の日本語版を上書きしてしまうため(本家の正典は upstream にある)。
 
 ## 手順
 
-1. `main` を本家へ追随(無編集なので fast-forward):
+1. `main` を本家へ追随(無編集なので fast-forward。**push はしない**):
 
    ```sh
    git checkout main
    git fetch upstream
    git merge --ff-only upstream/main
-   git push origin main
+   # 注意: git push origin main はしない (英語が Pages を上書きするのを防ぐ)
    ```
 
 2. `develop` に取り込む:

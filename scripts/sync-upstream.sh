@@ -17,10 +17,11 @@ fi
 
 git fetch upstream
 
-# main を本家ミラーに (無編集なので ff のはず)
+# main を本家ミラーに (無編集なので ff のはず)。
+# main は origin(fork)へ push しない: 継承 publish.yml が英語を gh-pages に
+# publish して日本語 Pages を上書きするのを防ぐ (main はローカル限定ミラー)。
 git checkout main
 git merge --ff-only upstream/main
-git push origin main
 
 # develop に取り込む
 git checkout develop
