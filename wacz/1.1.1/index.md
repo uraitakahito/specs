@@ -1,7 +1,7 @@
 # Web Archive Collection Zipped (WACZ) 
  
 > **非公式翻訳 (Unofficial translation).** これは WACZ 1.1.1 仕様の有志による日本語訳です。
-> 正典は英語原典 <https://specs.webrecorder.net/wacz/1.1.1/> 。
+> 正典は英語原典 [specs.webrecorder.net/wacz/1.1.1](https://specs.webrecorder.net/wacz/1.1.1/) 。
 > 原著作: Webrecorder, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。
 > 本訳は原文を翻訳・改変したもので、Webrecorder の公認・推奨を示すものではありません。
 
