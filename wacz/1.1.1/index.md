@@ -64,57 +64,54 @@ WACZ ファイルには、アーカイブされたコンテンツの描画に必
 
 ## Introduction
 
-This specification defines a directory structure and <a>ZIP</a> format
-specification for sharing and distributing <a>web archives</a>. <a>ZIP</a> files
-using this format can be referred to as <a>WACZ</a> (Web Archive Collection
-Zipped).
+本仕様は、<a>web archives</a> を共有・配布するためのディレクトリ構造と
+<a>ZIP</a> 形式の仕様を定義する。この形式を用いた <a>ZIP</a> ファイルは
+<a>WACZ</a>(Web Archive Collection Zipped)と呼ぶことができる。
 
 ### Motivation
 
-The goal of this specification is to provide a portable format for 
-<a>web archives</a> in order to achieve two broad goals for web archives:
+本仕様の目標は、<a>web archives</a> のための可搬な形式を提供し、
+ウェブアーカイブに関する 2 つの大きな目標を達成することである:
 
-1. *Social*: to provide an interoperable way of sharing web archive
-   <a>collections</a> that includes the <a>contextual information</a> needed 
-   for users to interpret and meaningfully interact with them.
+1. *Social*: ウェブアーカイブの <a>collections</a> を、利用者がそれらを解釈し
+   意味のある形で操作するために必要な <a>contextual information</a> とともに、
+   相互運用可能な方法で共有する手段を提供すること。
 
-2. *Technical*: to provide an efficient way to dynamically load 
-   *small amounts of data* from a remotely hosted file  
-   on static storage, without requiring the entire file 
-   to be downloaded, or for the intervention of specialized 
-   server side applications.
+2. *Technical*: 静的ストレージ上にリモートホストされたファイルから
+   *少量のデータ* を動的に読み込む効率的な手段を、ファイル全体の
+   ダウンロードや専用のサーバーサイドアプリケーションの介在を必要とせずに
+   提供すること。
 
-To use and make sense of a web archive collection, it is necessary to have the
-archived web content as well as <a>contextual information</a> that describes what the
-collection contains as well as when and how it was created. The collection also
-requires a set of entry points or <a>pages</a> to use for browsing the collection.
+ウェブアーカイブコレクションを利用し理解するには、アーカイブされたウェブ
+コンテンツに加え、そのコレクションが何を含み、いつ・どのように作成されたかを
+記述する <a>contextual information</a> が必要である。また、コレクションを閲覧する
+ための入口となる <a>pages</a> の集合も必要となる。
 
-All of this data needs to be <a>packaged</a> together so that the various pieces can be
-easily copied and transferred without accidentally separating them. This data
-package needs to to be easily transported from one storage system to another, 
-sent as an attachment in an email, placed on a thumb drive, and hosted by simply
-serving it up at a given URL as a static document, possibly from cloud object
-storage, or a CDN.
+これらのデータはすべて一緒に <a>packaged</a> される必要がある。そうすることで、
+各部分を誤って分離させることなく容易にコピー・転送できる。このデータパッケージは、
+あるストレージシステムから別のシステムへ容易に移送でき、電子メールの添付として
+送れ、USB メモリに入れられ、そして(クラウドオブジェクトストレージや CDN から)
+指定された URL で静的ドキュメントとして配信するだけでホストできる必要がある。
 
-Hosting web archives currently requires complex server infrastructure (e.g. a
-<a>Wayback Machine</a>) to serve <a>WARC</a> data in such a way that can be
-viewed in the browser. The <a>WACZ</a> format provides a storage approach
-optimized for efficient random-access to <a>packaged</a> up WARC data that allows 
-the browser to render a page by fetching only what is needed for that
-particular page. This is done by leveraging the <a>ZIP</a> format's built-in
-index to locate the contents of the web archive and its constituent metadata.
+現在、ウェブアーカイブをホストするには、ブラウザで閲覧できる形で <a>WARC</a>
+データを配信するための複雑なサーバーインフラ(例: <a>Wayback Machine</a>)が
+必要である。<a>WACZ</a> 形式は、<a>packaged</a> された WARC データへの効率的な
+ランダムアクセスに最適化されたストレージ手法を提供し、ブラウザが特定のページに
+必要なものだけを取得してそのページを描画できるようにする。これは、ウェブ
+アーカイブの内容とそれを構成するメタデータの位置特定に <a>ZIP</a> 形式の
+組み込みインデックスを活用することで実現される。
 
-WACZ is not designed to replace other web archiving formats. Rather it
-establishes a file <a>packaging</a> convention for all the data needed by a browser for
-efficient rendering of a web archive collection, and its contextualization.
+WACZ は他のウェブアーカイブ形式を置き換えることを意図したものではない。むしろ、
+ウェブアーカイブコレクションの効率的な描画とその文脈付けのためにブラウザが
+必要とするすべてのデータについて、ファイルの <a>packaging</a> 規約を定めるもので
+ある。
 
 ### Existing Tools 
 
-The [py-wacz](https://github.com/webrecorder/py-wacz) repository contains a
-reference implementation for creating WACZ files from existing WARC files, and
-validating them. Parts of the specification are also implemented and in use by
-[wabac.js](https://github.com/webrecorder/wabac.js) and
-[ReplayWeb.page](https://replayweb.page).
+[py-wacz](https://github.com/webrecorder/py-wacz) リポジトリには、既存の WARC
+ファイルから WACZ ファイルを作成し、それらを検証するためのリファレンス実装が
+含まれている。本仕様の一部は [wabac.js](https://github.com/webrecorder/wabac.js)
+および [ReplayWeb.page](https://replayweb.page) でも実装・利用されている。
 
 ## WACZ Object
 
