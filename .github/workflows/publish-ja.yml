@@ -8,6 +8,11 @@ on:
   push:
     branches: [develop]
 
+# markdown-to-respec は GitPython で gh-pages へ push するため、
+# GITHUB_TOKEN に contents:write が要る (fork は既定 read-only)。
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
