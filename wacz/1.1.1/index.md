@@ -1,20 +1,24 @@
 # Web Archive Collection Zipped (WACZ) 
  
+> **非公式翻訳 (Unofficial translation).** これは WACZ 1.1.1 仕様の有志による日本語訳です。
+> 正典は英語原典 <https://specs.webrecorder.net/wacz/1.1.1/> 。
+> 原著作: Webrecorder, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。
+> 本訳は原文を翻訳・改変したもので、Webrecorder の公認・推奨を示すものではありません。
+
 ## Status of This Document
 
-This is a stable version of the WACZ standard and is in active use by
-the Webrecorder project. Please open [GitHub issues](https://github.com/webrecorder/specs/issues/)
-for questions and suggestions.
+これは WACZ 標準の安定版であり、Webrecorder プロジェクトで実際に使用されています。
+質問や提案は [GitHub issues](https://github.com/webrecorder/specs/issues/) を開いてください。
 
 ## Abstract
 
-WACZ is a <a>media type</a> that allows web archive <a>collections</a> to be
-<a>packaged</a> and shared on the web as a discrete file. A WACZ file includes
-all the data that is needed for the rendering archived content as well as
-<a>contextual information</a> required for users to interpret it. Rendering
-software can obtain this data on demand using HTTP Range requests,
-without requiring the entire file to be fully retrieved, or for it to be
-otherwise mediated by specialized server side software.
+WACZ は、ウェブアーカイブの <a>collections</a> を 1 つの独立したファイルとして
+<a>packaged</a> し、ウェブ上で共有できるようにする <a>media type</a> です。
+WACZ ファイルには、アーカイブされたコンテンツの描画に必要なすべてのデータに加え、
+利用者がそれを解釈するために必要な <a>contextual information</a> が含まれます。
+描画ソフトウェアはこのデータを HTTP Range リクエストで必要に応じて取得でき、
+ファイル全体を取得することも、専用のサーバーサイドソフトウェアを介することも
+要しません。
 
 ## Terminology
       
