@@ -298,81 +298,77 @@ WACZ には、WACZ が使用する指定済みのファイルやディレクト�
 
 ## Processing Model
 
-The [[ZIP]] file format provides efficient random access, which means archived
-web pages can be retrieved efficiently even from large web archive collections
-without requiring the entire WACZ to be transferred. To achieve this WACZ
-clients can read portions of the ZIP file on-demand using HTTP RANGE requests
-[[RFC7233]].
+[[ZIP]] ファイル形式は効率的なランダムアクセスを提供する。これは、大きな
+ウェブアーカイブコレクションからでも、WACZ 全体を転送することなくアーカイブ済み
+ウェブページを効率的に取得できることを意味する。これを実現するため、WACZ
+クライアントは HTTP RANGE リクエスト [[RFC7233]] を用いて ZIP ファイルの一部を
+必要に応じて読み取ることができる。
 
-The processing model works as follows. Given a ZIP file, a client can quickly:
+処理モデルは次のように働く。ZIP ファイルが与えられると、クライアントは素早く:
 
-1. Read all entries to determine the contents of the ZIP file
-2. Load collection metadata from the `datapackage.json`
-3. Load a list of pages from `pages.jsonl`, if any
+1. すべてのエントリを読んで ZIP ファイルの内容を把握する
+2. `datapackage.json` からコレクションのメタデータを読み込む
+3. もしあれば `pages.jsonl` からページのリストを読み込む
 
-To lookup a given URL the client needs to:
+特定の URL を検索するには、クライアントは次を行う必要がある:
 
-1. Read the full CDX from ZIP
-2. Binary search index looking for the URL
-3. If a match found, get offset/length/location in WARC
-4. Read compressed WARC chunk in ZIP
+1. ZIP から CDX 全体を読む
+2. インデックスを二分探索して URL を探す
+3. 一致が見つかれば、WARC 内のオフセット/長さ/位置を得る
+4. ZIP 内の圧縮された WARC チャンクを読む
 
-This approach is being used by [ReplayWeb.page](https://replayweb.page)
+このアプローチは [ReplayWeb.page](https://replayweb.page) で使われている
 
 ## Publishing
 
-Because they are ZIP files WACZ can be hosted on the web as static files. This
-allows web archives to be easily maintained over time without relying on complex
-server side software, apart from widely available, open source, and well tested
-web server applications. If desirable WACZ files can be managed and made
-accessibile using HTTP object stores available from cloud hosting providers, and
-content deliver networks that geographically position web-archives closer to
-their users. However there are certain considerations to make when publishing
-WACZ files.
+WACZ は ZIP ファイルであるため、静的ファイルとしてウェブ上にホストできる。これに
+より、広く利用可能でオープンソースかつ十分にテストされたウェブサーバーアプリケーション
+以外の複雑なサーバーサイドソフトウェアに頼ることなく、ウェブアーカイブを長期に
+わたって容易に維持できる。必要であれば、クラウドホスティング事業者が提供する HTTP
+オブジェクトストアや、ウェブアーカイブを地理的に利用者に近づけるコンテンツ
+デリバリネットワークを用いて、WACZ ファイルを管理しアクセス可能にできる。ただし、
+WACZ ファイルを公開する際にはいくつか考慮すべき点がある。
 
 ### Content-Length
 
-WACZ clients need to know how large an entire WACZ file is in order to
-download it prior to rendering, or to read it dynamically. To support this HTTP
-responses for WACZ files MUST use the `Content-Length` HTTP header.
+WACZ クライアントは、描画前にダウンロードする、あるいは動的に読み取るために、
+WACZ ファイル全体の大きさを知る必要がある。これをサポートするため、WACZ ファイルに
+対する HTTP 応答は `Content-Length` HTTP ヘッダーを使わなければならない (MUST)。
 
 ### Partial Requests
 
-Clients that render WACZ files typically need to be able to fetch content from
-the WACZ file on demand. For example when displaying archived content for a
-given URL that URL needs to be looked up in the CDXJ index, and the byte offsets
-from the index entry are then used to retrieve a portion of a given WARC file
-that is enclosed in the WACZ.
+WACZ ファイルを描画するクライアントは、通常、WACZ ファイルからコンテンツを必要に
+応じて取得できる必要がある。例えば、特定の URL に対するアーカイブ済みコンテンツを
+表示する際には、その URL を CDXJ インデックスで検索し、インデックスエントリの
+バイトオフセットを用いて、WACZ に内包された特定の WARC ファイルの一部を取得する。
 
-In order for clients to be able to perform this dynamic retrieval web servers
-that publish WACZ files MUST support HTTP range requests [[RFC7233]]. HTTP
-responses for WACZ HTTP requests SHOULD server WACZ files using the
-`Accept-Ranges` HTTP header.
+クライアントがこの動的な取得を行えるようにするため、WACZ ファイルを公開する
+ウェブサーバーは HTTP range リクエスト [[RFC7233]] をサポートしなければならない
+(MUST)。WACZ への HTTP 応答は、`Accept-Ranges` HTTP ヘッダーを用いて WACZ ファイルを
+配信すべきである (SHOULD)。
 
 ### CORS
 
-WACZ files and the their clients MAY be served from the same host name. However
-it can be useful to view the web archive from a host name that is distinct from
-the host name that is publishing the WACZ file. For example this is the
-case when publishing WACZ files using a cloud provider's HTTP object storage
-(e.g. `s3.amazonaws.com`) and making it viewable at another domain (`e.g.
-example.org`). It also is the case when WACZ publishers want to allow their web
-archives to circulate on the web, and be viewable in multiple locations.
+WACZ ファイルとそのクライアントは、同じホスト名から配信されてもよい (MAY)。しかし、
+WACZ ファイルを公開しているホスト名とは異なるホスト名からウェブアーカイブを閲覧
+できると便利な場合がある。例えば、クラウド事業者の HTTP オブジェクトストレージ
+(例: `s3.amazonaws.com`)を用いて WACZ ファイルを公開し、別のドメイン(例:
+`example.org`)で閲覧可能にする場合がそれにあたる。また、WACZ の公開者が自分の
+ウェブアーカイブをウェブ上で流通させ、複数の場所で閲覧可能にしたい場合もそうである。
 
-For security reasons browsers restrict access to files hosted on a
-different domain than the websites that is trying to load them. In order to
-support loading from different domains WACZ files SHOULD be made available using
-the `access-control-allow-origin` [[CORS]] HTTP header.
+セキュリティ上の理由から、ブラウザは、読み込もうとしているウェブサイトとは異なる
+ドメインにホストされたファイルへのアクセスを制限する。異なるドメインからの読み込みを
+サポートするため、WACZ ファイルは `access-control-allow-origin` [[CORS]] HTTP
+ヘッダーを用いて利用可能にすべきである (SHOULD)。
 
 ### Media Type
 
-WACZ HTTP responses for WACZ files SHOULD be published with the
-`application/wacz` media type.
+WACZ ファイルに対する WACZ の HTTP 応答は、`application/wacz` メディアタイプで
+公開すべきである (SHOULD)。
 
 ### Example Response
 
-Given these requirements a minimal HTTP response for a WACZ could look
-like:
+これらの要件を踏まえると、WACZ に対する最小の HTTP 応答は次のようになりうる:
 
 <pre class="example">
 HTTP/2 200
