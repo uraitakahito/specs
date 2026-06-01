@@ -22,44 +22,43 @@ WACZ ファイルには、アーカイブされたコンテンツの描画に必
 
 ## Terminology
       
-This section defines the terms used in this specification and throughout web
-archives infrastructure. A link to these terms is included whenever they appear
-in this specification.
+この節では、本仕様およびウェブアーカイブ基盤全体で用いられる用語を定義する。
+これらの用語が本仕様中に現れるたびに、その定義へのリンクが付与される。
 
 <dl class="termlist">
 
 <dt><dfn id="dfn-collection">Collection</dfn></dt>
-<dd>An arbitrary set of related archived web pages and metadata based on some topic, website domain(s), time period, or other conceptual grouping.</dd>
+<dd>トピック・ウェブサイトのドメイン・期間など、何らかの概念的なまとまりに基づく、関連するアーカイブ済みウェブページとメタデータの任意の集合。</dd>
 
 <dt><dfn id="dfn-context" data-lt="contextual information">Context</dfn></dt>
-<dd>Descriptive information about a web archive that helps a person using that web archive understand and interpret what the archive contains. This information can include why the content was selected for the archive, when it was created, who created it, and what tools or applications were used to create it.</dd>
+<dd>あるウェブアーカイブに関する説明的な情報で、そのアーカイブを利用する人がアーカイブの内容を理解・解釈する助けとなるもの。この情報には、なぜそのコンテンツがアーカイブ対象として選ばれたか、いつ作成されたか、誰が作成したか、どのツールやアプリケーションを用いて作成したか、などが含まれうる。</dd>
 
 <dt><dfn id="dfn-iipc">IIPC</dfn></dt>
-<dd>The International Internet Preservation Consortium. An organization of libraries, archives and other organizations established in 2003 to coordinate efforts to preserve web content.</dd>
+<dd>国際インターネット保存コンソーシアム (International Internet Preservation Consortium)。ウェブコンテンツを保存する取り組みを調整するため 2003 年に設立された、図書館・アーカイブ機関などの組織。</dd>
 
 <dt><dfn id="dfn-mediatype">Media Type</dfn></dt>
-<dd>A two-part identifier  for file formats that are transferred on the World Wide Web and the underlying Internet. [[IANA-MEDIA-TYPES]].</dd>
+<dd>World Wide Web とその基盤であるインターネット上で転送されるファイル形式のための、2 部構成の識別子。[[IANA-MEDIA-TYPES]]。</dd>
 
 <dt><dfn id="dfn-package" data-lt="packaging|packaged">Package</dfn></dt>
-<dd>A file format that allows distinct files or bitstreams to be represented within it. Popular examples of packaging formats include ZIP, PDF, MP4, tar and Open Office XML.</dd>
+<dd>個別のファイルやビットストリームを内部に表現できるファイル形式。代表的なパッケージ形式の例として ZIP・PDF・MP4・tar・Open Office XML がある。</dd>
 
 <dt><dfn id="dfn-webpage" data-lt="pages">Page</dfn></dt>
-<dd>A web document as viewed in a web browser that is viewing a specific URL. Sometimes referred to as a <em>web page</em>.</dd>
+<dd>特定の URL を表示しているウェブブラウザで閲覧される web ドキュメント。<em>web page</em> と呼ばれることもある。</dd>
 
 <dt><dfn id="dfn-wacz" data-lt="web archive collection">WACZ</dfn></dt>
-<dd>Web Archive Collection Zipped. A file that conforms to this specification which is used to package up <a>WARC</a> data and metadata into a <a>ZIP</a> file for distribution and replay on the web</dd>
+<dd>Web Archive Collection Zipped。本仕様に準拠したファイルで、<a>WARC</a> データとメタデータを <a>ZIP</a> ファイルにパッケージ化し、ウェブ上での配布とリプレイに用いる。</dd>
 
 <dt><dfn id="dfn-warc">WARC</dfn></dt>
-<dd>A file containing concatenated representations of web resources conforming to the [[WARC]] specification.</dd>
+<dd>[[WARC]] 仕様に準拠した、ウェブリソースの表現を連結して格納したファイル。</dd>
 
 <dt><dfn id="dfn-wayback">Wayback Machine</dfn></dt>
-<dd>A well known web application for replaying archived web pages that was initially developed at the Internet Archive and has been forked as an open soruce application by the <a>IIPC</a>.</dd>
+<dd>アーカイブ済みウェブページをリプレイするための著名なウェブアプリケーション。当初 Internet Archive で開発され、<a>IIPC</a> によってオープンソースアプリケーションとして fork された。</dd>
 
 <dt><dfn id="dfn-web-archive">Web Archive</dfn></dt>
-<dd>A collection of files that preserve representations of web resources in the WARC format. A web archive may also include derivative files such as CDX indexes for accessing records within the archive.</dd>
+<dd>ウェブリソースの表現を WARC 形式で保存するファイルの集合。ウェブアーカイブには、アーカイブ内のレコードへアクセスするための CDX インデックスなどの派生ファイルが含まれることもある。</dd>
 
 <dt><dfn id="dfn-zip-file" data-lt="zip">ZIP file</dfn></dt>
-<dd>A file conforming to the [[ZIP]] specification which is used to aggregate, compress, and encrypt files into a single interoperable container. WACZ allows for both ZIP and ZIP64 encodings for larger archives.</dd>
+<dd>[[ZIP]] 仕様に準拠したファイルで、複数のファイルを単一の相互運用可能なコンテナに集約・圧縮・暗号化するために用いられる。WACZ は、より大きなアーカイブのために ZIP と ZIP64 の両エンコーディングを許容する。</dd>
 
 </dl>
 
