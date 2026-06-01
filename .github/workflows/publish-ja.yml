@@ -16,4 +16,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: webrecorder/markdown-to-respec@v0.3.0
         with:
-          ignore: README.md
+          # ignore は正規表現 (re.match)。README に加え、運用メモ SYNC.md も
+          # spec 変換対象から除外する (SYNC.json は存在しないため)。
+          ignore: '(README|SYNC)\.md'
