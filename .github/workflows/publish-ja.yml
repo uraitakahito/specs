@@ -1,0 +1,19 @@
+name: publish-ja
+
+# 日本語訳 (develop) を本家と同じ markdown-to-respec で ReSpec HTML 化し、
+# gh-pages へ配置する (fork の GitHub Pages 用)。
+# 本家の publish.yml は main トリガで英語を publish するが、fork では main を
+# push しない運用 (SYNC.md 参照) なのでこちらだけが発火する。
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build ja ReSpec HTML
+    steps:
+      - uses: actions/checkout@v4
+      - uses: webrecorder/markdown-to-respec@v0.3.0
+        with:
+          ignore: README.md
