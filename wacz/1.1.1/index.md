@@ -115,20 +115,20 @@ WACZ は他のウェブアーカイブ形式を置き換えることを意図し
 
 ## WACZ Object
 
-A WACZ object consists of the following:
+WACZ オブジェクトは次のものから構成される:
 
-1. A `datapackage.json` file for recording technical and descriptive metadata
-   specified in [[FRICTIONLESS-DATA-PACKAGE]].
+1. [[FRICTIONLESS-DATA-PACKAGE]] で規定される技術的・記述的メタデータを記録する
+   ための `datapackage.json` ファイル。
 
-2. An extensible directory and naming convention for <a>web archive</a> data.
+2. <a>web archive</a> データのための、拡張可能なディレクトリおよび命名規約。
 
-3. A method for bundling the directory layout in a <a>ZIP</a> file.
+3. そのディレクトリ構成を <a>ZIP</a> ファイルにまとめる方法。
 
 ### Directory Layout
 
-A <a>WACZ</a> contains a directory structure, that contains web archive
-collection data which MUST conform to the [[FRICTIONLESS-DATA-PACKAGE]]
-specification. This directory structure looks like:
+<a>WACZ</a> はディレクトリ構造を含み、その中にウェブアーカイブコレクションの
+データを格納する。このデータは [[FRICTIONLESS-DATA-PACKAGE]] 仕様に準拠しなければ
+ならない (MUST)。このディレクトリ構造は次のようになる:
 
 <pre class="example">
 ├── archive
@@ -145,9 +145,10 @@ specification. This directory structure looks like:
 
 #### archive
 
-The `archive` directory MUST contain one or more files in the [[WARC]] format. 
-The files SHOULD use the `.warc` file extension unless they are GZIP encoded in 
-which case they MUST use the `.warc.gz` file extension.
+`archive` ディレクトリは [[WARC]] 形式のファイルを 1 つ以上含まなければならない
+(MUST)。これらのファイルは、GZIP エンコードされていない限り `.warc` 拡張子を
+使うべきである (SHOULD)。GZIP エンコードされている場合は `.warc.gz` 拡張子を
+使わなければならない (MUST)。
 
 <pre class="example">
 archive
@@ -156,10 +157,10 @@ archive
 
 #### indexes
 
-The `indexes` directory MUST include one or more indexes for the WARC data stored
-in `archive`. These index files allow clients to efficiently look up a URL to
-see if it is contained in the WACZ. Index files MUST contain CDXJ data
-and MAY be gzip compressed [[PYWB-CDXJ]].
+`indexes` ディレクトリは、`archive` に格納された WARC データに対するインデックスを
+1 つ以上含まなければならない (MUST)。これらのインデックスファイルにより、クライアントは
+URL が WACZ に含まれるかどうかを効率的に検索できる。インデックスファイルは CDXJ データを
+含まなければならず (MUST)、gzip 圧縮されてもよい (MAY) [[PYWB-CDXJ]]。
 
 <pre class="example">
 indexes
@@ -168,19 +169,19 @@ indexes
 
 #### pages.jsonl
 
-The `pages/pages.jsonl` MUST be present and include a list of 'Page' objects as
-[[JSON-Lines]] where each line MUST contain at least the following properties:
+`pages/pages.jsonl` は存在しなければならず (MUST)、'Page' オブジェクトのリストを
+[[JSON-Lines]] として含む。各行は少なくとも次のプロパティを含まなければならない (MUST):
 
-- `url` - a URL for the page
-- `ts` - a [[RFC3339]] datetime string
+- `url` - ページの URL
+- `ts` - [[RFC3339]] の日時文字列
 
-Each entry in the [[JSONL]] file MAY contain the following properties to aid in
-navigating a web archive collection:
+[[JSONL]] ファイルの各エントリは、ウェブアーカイブコレクションのナビゲーションを
+助けるために次のプロパティを含んでもよい (MAY):
 
-- `title` - a string describing the resource
-- `id` - an arbitrary identifier for the resource
-- `text` - text extracted from the snapshot
-- `size` - an integer that represents the number of bytes for the page and all its resources
+- `title` - リソースを説明する文字列
+- `id` - リソースの任意の識別子
+- `text` - スナップショットから抽出したテキスト
+- `size` - ページとそのすべてのリソースのバイト数を表す整数
 
 <pre class="example">
 {"format": "json-pages-1.0", "id": "pages", "title": "All Pages"}
@@ -188,25 +189,24 @@ navigating a web archive collection:
 {"id": "12304e6ba9", "url": "https://www.example.com/another", "size": 1256, "ts": "2020-10-07T21:23:36Z", "title": "Another Page", "text": "Example Domain This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission. More information..."}
 </pre>
 
-Each entry in the [[JSONL]] file MAY contain additional properties as long as
-they do not interfere with the required properties.
+[[JSONL]] ファイルの各エントリは、必須プロパティに干渉しない限り、追加の
+プロパティを含んでもよい (MAY)。
 
-Other [[JSONL]] files MAY be added on using the same format in the `pages/`
-directory. A common use case is to include only the main pages in the
-`pages.jsonl`, while including additional pages, such as those discovered
-automatically via a crawl in an another file e.g. `extraPages.jsonl`.
+同じ形式の他の [[JSONL]] ファイルを `pages/` ディレクトリに追加してもよい (MAY)。
+よくある使い方は、`pages.jsonl` にはメインのページだけを含め、クロールによって
+自動的に発見されたページなどの追加ページは別のファイル(例: `extraPages.jsonl`)に
+含める、というものである。
 
 #### datapackage.json
 
-The `datapackage.json` file MUST be present at the root of the WACZ which
-serves as the manifest for the web archive and is compliant with the
-[[FRICTIONLESS-DATA-PACKAGE]] specification. It MUST contain the following
-properties:
+`datapackage.json` ファイルは WACZ のルートに存在しなければならず (MUST)、
+ウェブアーカイブのマニフェストとして機能し、[[FRICTIONLESS-DATA-PACKAGE]] 仕様に
+準拠する。次のプロパティを含まなければならない (MUST):
 
-- `profile`: the string `data-package`
-- `resources`: a list of file names, paths, sizes and fixity for all files
-   contained in the WACZ.
-- `wacz_version`: the version of WACZ used, for example `1.1.1`
+- `profile`: 文字列 `data-package`
+- `resources`: WACZ に含まれるすべてのファイルの、ファイル名・パス・サイズ・
+   フィクシティ (fixity) のリスト。
+- `wacz_version`: 使用した WACZ のバージョン(例: `1.1.1`)
 
 <pre class="example">
 {
@@ -229,34 +229,32 @@ properties:
 }
 </pre>
 
-The `datapackage.json` SHOULD include properties that allow rendering
-applications to present the user with <a>contextual information</a> about the
-web archive:
+`datapackage.json` は、描画アプリケーションが利用者にウェブアーカイブに関する
+<a>contextual information</a> を提示できるよう、次のプロパティを含むべきである (SHOULD):
 
-- `title`: a string or one sentence description for the collection
-- `description`: a longer description of the archive's contents 
-   which MUST be Markdown formatted (plain text is valid Markdown)
-- `created`: a [[RFC3339]] datetime for when the WACZ file was created
-- `modified`: a [[RFC3339]] datetime for when the WACZ file was last modified
-- `software`: A description of what software was used to create the WACZ file
-- `mainPageUrl`: An optional URL of the main or starting page in the collection
-  to be used for initial replay
-- `mainPageDate`: An optional ISO-formatted date of the main or starting page in 
-  the collection to be used for initial replay
+- `title`: コレクションの文字列または 1 文の説明
+- `description`: アーカイブの内容についてのより長い説明。
+   Markdown 形式でなければならない (MUST)(プレーンテキストも妥当な Markdown である)
+- `created`: WACZ ファイルが作成された日時([[RFC3339]])
+- `modified`: WACZ ファイルが最後に変更された日時([[RFC3339]])
+- `software`: WACZ ファイルの作成に使われたソフトウェアの説明
+- `mainPageUrl`: 初期リプレイに用いる、コレクションのメインまたは開始ページの
+  任意の URL
+- `mainPageDate`: 初期リプレイに用いる、コレクションのメインまたは開始ページの
+  任意の ISO 形式の日付
 
-Other properties from the [[FRICTIONLESS-DATA-PACKAGE]] specification such as
-`licenses`, `version`, `organization`, `contributors`, `email` MAY be used. 
-Custom properties that do not interfere with pre-existing properties MAY also 
-be used.
+[[FRICTIONLESS-DATA-PACKAGE]] 仕様の他のプロパティ(`licenses`・`version`・
+`organization`・`contributors`・`email` など)を使ってもよい (MAY)。既存の
+プロパティに干渉しないカスタムプロパティを使ってもよい (MAY)。
 
 #### datapackage-digest.json
 
-A `datapackage-digest.json` file SHOULD be included in the root of the WACZ to
-verify the `datapackage.json` manifest with a hash and thus for the entire
-contents of the WACZ. If present the following properties MUST be included:
+`datapackage-digest.json` ファイルは、`datapackage.json` マニフェストをハッシュで
+検証し、ひいては WACZ 全体の内容を検証するために、WACZ のルートに含めるべきである
+(SHOULD)。存在する場合は次のプロパティを含まなければならない (MUST):
 
-* `path`: the string "datapackage.json"
-* `hash`: a cryptographic hash for the `datapackage.json` file
+* `path`: 文字列 "datapackage.json"
+* `hash`: `datapackage.json` ファイルの暗号学的ハッシュ
 
 <pre class="example">
 {
@@ -265,34 +263,38 @@ contents of the WACZ. If present the following properties MUST be included:
 }
 </pre>
 
-For an approach to recording a cryptographic signature in the
-`datapackage-digest.json` in order to assert and prove the authorship of a WACZ
-please see [WACZ Signing and Verification](/wacz-auth/latest/).
+WACZ の作成者性 (authorship) を主張・証明するために `datapackage-digest.json` に
+暗号学的署名を記録する方法については、[WACZ Signing and Verification](/wacz-auth/latest/)
+を参照のこと。
 
 ### Other files and directories
 
-Other files and directories MAY be present in a WACZ as long as they do 
-not interfere with specified files and directories that are used by WACZ.
-Specifically, custom files and directories MUST NOT be added to the existing WACZ directories, `archive`, `indexes` and `pages`. Additional files MUST be listed in the resources section of `datapackage.json` to ensure conformance with [[FRICTIONLESS-DATA-PACKAGE]]
+WACZ には、WACZ が使用する指定済みのファイルやディレクトリに干渉しない限り、
+その他のファイルやディレクトリが存在してもよい (MAY)。特に、既存の WACZ ディレクトリ
+`archive`・`indexes`・`pages` にカスタムのファイルやディレクトリを追加してはならない
+(MUST NOT)。追加のファイルは、[[FRICTIONLESS-DATA-PACKAGE]] への準拠を保証するため、
+`datapackage.json` の resources セクションに列挙しなければならない (MUST)
 
 ### Zip Format
 
-The entire directory structure MUST be stored in a standard [[ZIP]] file.
+ディレクトリ構造全体は、標準的な [[ZIP]] ファイルに格納しなければならない (MUST)。
 
 #### Zip Compression
 
-Already compressed files MUST NOT be compressed again to allow for random access.
+ランダムアクセスを可能にするため、すでに圧縮されているファイルを再度圧縮しては
+ならない (MUST NOT)。
 
-- All `archive/` files should be stored in ZIP with 'STORE' mode.
-- All `index/*.cdx.gz` files should be stored in ZIP with 'STORE' mode.
-- All files (`*.jsonl`, `*.json`, `*.idx`, `*.cdx`, `*.cdxj`) can be stored in 
-  the ZIP with either 'DEFLATE' or 'STORE' mode.
+- すべての `archive/` ファイルは、ZIP の 'STORE' モードで格納すべきである。
+- すべての `index/*.cdx.gz` ファイルは、ZIP の 'STORE' モードで格納すべきである。
+- すべてのファイル(`*.jsonl`・`*.json`・`*.idx`・`*.cdx`・`*.cdxj`)は、ZIP の
+  'DEFLATE' または 'STORE' のいずれかのモードで格納できる。
 
 #### Zip Format File Extension
 
-A ZIP file that follows this Web Archive Collection format spec MUST use the extension `.wacz`.
+この Web Archive Collection 形式仕様に従う ZIP ファイルは、拡張子 `.wacz` を
+使わなければならない (MUST)。
 
-Such a file can be referred to as a WACZ file or a WACZ.
+そのようなファイルは WACZ ファイルまたは WACZ と呼ぶことができる。
 
 ## Processing Model
 
