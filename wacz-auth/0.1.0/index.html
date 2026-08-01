@@ -269,45 +269,43 @@ WACZ ファイルの作成者は、特定の TLS 証明書の所有者と同一�
 
 # Signing
 
-To generate the `signedData`, the creator of the WACZ can perform the
-following steps.
+`signedData` を生成するために、WACZ の作成者は次の手順を実行できる。
 
 ## Anonymous Signing
 
-At minimum, the creator of the WACZ can create the anonymous signature
-`signedData`, containing only its public key and signature.
+最小限の構成として、WACZ の作成者は、自身の公開鍵と署名だけを含む匿名署名の
+`signedData` を作成できる。
 
-With this approach, the client must distribute its public key out-of-band to
-make WACZ verification possible.
+この方式では、WACZ の検証を可能にするために、クライアントが自身の公開鍵を
+帯域外 (out-of-band) で配布しなければならない。
 
 ## Domain-Name Identity + Timestamp Signing
 
-To create the signedData in the second example, the client must perform the
-following:
+2 つ目の例にある signedData を作成するには、クライアントは次を実行しなければ
+ならない:
 
-1. Generate a ECDSA private key.
+1. ECDSA の秘密鍵を生成する。
 
-2. Create a Certificate Request signed by the private key.
+2. その秘密鍵で署名した証明書要求 (Certificate Request) を作成する。
 
-3. Receive a TLS certificate for its CSR from a trusted CA, such as LetsEncrypt.
+3. LetsEncrypt のような信頼された CA から、その CSR に対する TLS 証明書を受け取る。
 
-4. Optionally: use a second CA (such as a private self-signed CA) to generate a
-second cross-signed certificate as backup.
+4. 任意: バックアップとして、2 つ目の CA (プライベートな自己署名 CA など) を使い、
+2 つ目のクロス署名証明書を生成する。
 
-5. Sign the hash using its private key to generate the first signature
-(signature)
+5. 自身の秘密鍵でハッシュに署名し、1 つ目の署名 (signature) を生成する。
 
-6. Use an RFC 3161 timestamp server to sign the previous signature
+6. RFC 3161 タイムスタンプサーバを使って、直前の署名に署名する
 (timeSignature)
 
-This approach is based on a 'trusted-third party' which securely creates and
-signs the WACZ files.
+この方式は、WACZ ファイルを安全に作成・署名する「信頼できる第三者
+(trusted-third party)」を前提としている。
 
-The intended workflow for this approach is that the creator of the WACZ has a
-secure, private connection to the attestation server which is running on the
-designated domain and can observe and sign the requested hash. Access to the
-attestation server must be restricted to trusted creator of the WACZ.
-Establishing this secure connection is beyond the scope of this specification.
+この方式で想定しているワークフローは次のとおりである。WACZ の作成者は、指定された
+ドメイン上で動作するアテステーションサーバに対して安全でプライベートな接続を持ち、
+そのサーバが要求されたハッシュを観測して署名する。アテステーションサーバへの
+アクセスは、信頼された WACZ の作成者だけに制限しなければならない。この安全な接続を
+どう確立するかは、この仕様の範囲外である。
 
     </section>
     <section data-format="markdown">
