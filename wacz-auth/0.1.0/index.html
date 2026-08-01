@@ -116,47 +116,44 @@
 
 # Introduction
 
-This document is a working draft for a proposal to create signed WACZ packages
-which allow the package's author to be cryptographically proven.
+この文書は、パッケージの作成者を暗号学的に証明できる署名付き WACZ パッケージを
+作成するための提案の作業草案 (working draft) である。
 
 ## Motivation
 
-The purpose of this specification is to provide an optional mechanism to make
-web archives bundled in WACZ more trusted.
+この仕様の目的は、WACZ にまとめられたウェブアーカイブの信頼性を高めるための
+任意 (optional) の仕組みを提供することである。
 
-The WACZ format provides a way to create portable web archives and distribute
-them through any online network in a decentralized manner.
+WACZ 形式は、可搬なウェブアーカイブを作成し、それを任意のオンラインネットワークを
+通じて分散的に配布する手段を提供する。
 
-To increase trust in web archives, it becomes necessary to guarantee certain
-properties about who the web archive was created and when.
+ウェブアーカイブへの信頼を高めるには、そのウェブアーカイブを誰がいつ作成したかに
+ついて、一定の性質を保証することが必要になる。
 
 ## Proof of Authenticity
 
-Proving web archive authenticity can be difficult. Ideally, proof of
-authenticity could guarantee that any web server served a particular URL at a
-particular point in time. Unfortunately, this is not currently possible with
-existing web standards, as even TLS does not provide "non-repudiation".
+ウェブアーカイブの真正性 (authenticity) を証明するのは難しい。理想的には、真正性の
+証明は「あるウェブサーバが特定の時点に特定の URL を配信した」ことを保証できるはず
+である。しかし残念ながら、既存のウェブ標準では現時点でこれは不可能である。TLS で
+さえ「否認防止 (non-repudiation)」を提供しないからである。
 
-There are proposals, such as [signed
-exchanges](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html),
-which provide new ways for web servers to serve content that could later be
-verified. However, this requires HTTPS servers to support a new protocol and
-format.
+[signed exchanges](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html)
+のように、後から検証できる形でウェブサーバがコンテンツを配信する新しい方法の提案も
+存在する。しかしこれには、HTTPS サーバが新しいプロトコルと形式に対応する必要がある。
 
-A web archive can be created by any HTTP client that is capable of recording
-its end of the HTTP network traffic. The goal of this specification is to
-provide a way for a client that creates a web archive and stores it in the WACZ
-format to also add authentication information.
+ウェブアーカイブは、自身が関与した HTTP 通信を記録できる HTTP クライアントであれば
+どれでも作成できる。この仕様の目標は、ウェブアーカイブを作成して WACZ 形式で保存
+するクライアントが、あわせて認証情報を付加できるようにする方法を提供することである。
 
-This proposal will provide a mechanism to authenticate:
+この提案が認証の仕組みを提供する対象は次のとおり:
 
-- an identity for the creator of the web archive
-- a timestamp for when the web archive was created
+- ウェブアーカイブの作成者の身元 (identity)
+- ウェブアーカイブが作成された時刻のタイムスタンプ
 
-This approach requires trusting the client, and possible trusted third party
-'observer' that signs the web archive. This proposal does not make any
-guarantees from the perspective of the web server serving the content, as this
-is not currently possible with HTTP/S.
+この方式は、クライアントと、場合によってはウェブアーカイブに署名する信頼できる
+第三者の「観測者 (observer)」とを信頼することを前提とする。この提案は、コンテンツを
+配信するウェブサーバの側から見た保証は一切行わない。HTTP/S では現時点でそれが
+不可能だからである。
 
     </section>
     <section data-format="markdown">
