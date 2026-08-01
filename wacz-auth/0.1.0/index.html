@@ -312,67 +312,63 @@ WACZ ファイルの作成者は、特定の TLS 証明書の所有者と同一�
 
 # Verification
 
-Verification of a signed WACZ can involve the following steps:
+署名付き WACZ の検証には、次の手順が関わりうる:
 
-1. Validate the WACZ as a Frictionless Data Package, ensuring the
-`datapackage.json` hashes match the contents.
+1. WACZ を Frictionless Data Package として検証し、`datapackage.json` の
+ハッシュが内容と一致することを確認する。
 
-2. Validate that the `hash` in `datapackage-digest.json` matches
-`datapackage.json`.
+2. `datapackage-digest.json` の `hash` が `datapackage.json` と一致することを
+検証する。
 
-3. Verify that the `signedData` property of `datapackage-digest.json` is a [valid SignatureData object](#signature-data-format).
+3. `datapackage-digest.json` の `signedData` プロパティが[妥当な SignatureData オブジェクト](#signature-data-format)であることを検証する。
 
 ## Anonymous Signature Validation
 
-Given an anonymous `signedData` with only a publicKey:
+publicKey だけを持つ匿名の `signedData` が与えられた場合:
 
-4. Validate the `signature` of the specified `hash` with the `publicKey`.
+4. 指定された `hash` に対する `signature` を `publicKey` で検証する。
 
-The WACZ file is thus valid, but publicKey must be validated using external
-mechanisms.
+これで WACZ ファイルは妥当となるが、publicKey 自体は外部の仕組みを使って
+検証しなければならない。
 
 ## Domain-Name Identity + Timestamp Validation.
 
-Given a signature data with domain-name signature + timestamp, the validation is
-as follows:
+ドメイン名署名 + タイムスタンプを持つ署名データが与えられた場合、検証は次のとおり
+である:
 
-4. Read the first certificate in `domainCert` certificate chain and validate
-that `signature` is a valid signature of `hash` using the public key of the
-certificate.
+4. `domainCert` 証明書チェーンの最初の証明書を読み、その証明書の公開鍵を使って
+`signature` が `hash` の妥当な署名であることを検証する。
 
-5. Verify that the `domain` matches the subjectName of the `domainCert` TLS
-certificate.
+5. `domain` が `domainCert` TLS 証明書の subjectName と一致することを検証する。
 
-6. Read the first certificate of `timestampCert` certificate chain and validate
-that the `timeSignature` is a valid RFC 3161 timestamp signature of `signature`
+6. `timestampCert` 証明書チェーンの最初の証明書を読み、`timeSignature` が
+`signature` に対する妥当な RFC 3161 タイムスタンプ署名であることを検証する
 
-7. Validate that the `created` date is within 10 minutes of the signed timestamp
-in `timeSignature`
+7. `created` の日時が、`timeSignature` に含まれる署名済みタイムスタンプから
+10 分以内であることを検証する
 
-8. Verify trust of the `domainCert` certificate chain by checking trusted root
-list. (Optionally, check for certificate revocation in Certificate Transparency
-logs).
+8. 信頼済みルート一覧と照合して、`domainCert` 証明書チェーンの信頼性を検証する。
+(任意で、証明書透明性ログ (Certificate Transparency) で証明書の失効を確認する)。
 
-9. Verify trust of the `timestampCert` certificate chain by checking trusted
-root list.
+9. 信頼済みルート一覧と照合して、`timestampCert` 証明書チェーンの信頼性を検証する。
 
-10. Optional: if `crossSignedCert` is provided, check that it has same public key
-as `domainCert`, and check this chain in trusted root list. Or, if `domainCert`
-is not trusted, use this trust path instead of `domainCert`.
+10. 任意: `crossSignedCert` が提供されている場合、それが `domainCert` と同じ公開鍵を
+持つことを確認し、このチェーンを信頼済みルート一覧と照合する。あるいは `domainCert`
+が信頼されていない場合は、`domainCert` の代わりにこの信頼経路を使う。
 
 ## Verification of Partially loaded WACZ
 
-The verification process above assumes a fully loaded WACZ file. However, WACZ
-format supports partial loading of individual HTTP responses (via WARC records)
-on demand.
+上記の検証手順は、WACZ ファイルが完全に読み込まれていることを前提としている。
+しかし WACZ 形式は、個々の HTTP レスポンス (WARC レコード経由) を必要に応じて
+部分的に読み込むことに対応している。
 
-For partial/on-demand loading, *Step 1* is modified as WARC files are not fully
-loaded and can not be validated against the hash.
+部分的・オンデマンドの読み込みでは、WARC ファイルが完全には読み込まれずハッシュと
+照合できないため、*手順 1* が変更される。
 
-Instead, for each WARC record, verify the hash of the loaded WARC record with
-the hash specified in the CDXJ index. If using a compressed CDXJ index, also
-verify the hash of each compressed CDXJ block with the IDX index. (See the CDXJ
-specification for more details).
+代わりに、各 WARC レコードについて、読み込んだ WARC レコードのハッシュを CDXJ
+インデックスに指定されたハッシュと照合する。圧縮された CDXJ インデックスを使う
+場合は、各圧縮 CDXJ ブロックのハッシュも IDX インデックスと照合する。(詳細は CDXJ
+仕様を参照のこと)。
 
     </section>
     <section data-format="markdown">
