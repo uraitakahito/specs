@@ -375,31 +375,29 @@ publicKey だけを持つ匿名の `signedData` が与えられた場合:
 
 # Implementations
 
-Implementations of this spec exist in the following tools:
+この仕様の実装は次のツールに存在する:
 
-* The [authsign](https://github.com/webrecorder/authsign) library provides an
-HTTP-based API for creating and validating a WACZ `signedData` for the
-domain-name identity + timestamp approach. This  library uses the LetsEncrypt
-service to generate a domain certificate on-demand, and the
-[FreeTSA](https://freetsa.org/index_en.php) timestamping service to generate an
-RFC 3161 timestamp.
+* [authsign](https://github.com/webrecorder/authsign) ライブラリは、ドメイン名
+identity + タイムスタンプ方式の WACZ `signedData` を作成・検証するための
+HTTP ベースの API を提供する。このライブラリは、ドメイン証明書をオンデマンドで
+生成するために LetsEncrypt サービスを、RFC 3161 タイムスタンプを生成するために
+[FreeTSA](https://freetsa.org/index_en.php) タイムスタンプサービスを使う。
 
-* The [py-wacz](https://github.com/webrecorder/py-wacz) CLI tool can be used to
-generate and validate WACZ file with domain-name identity + timestamp, by either
-connecting to a `authsign` server via API for signing, or for validating
-directly via the CLI.
+* [py-wacz](https://github.com/webrecorder/py-wacz) CLI ツールは、ドメイン名
+identity + タイムスタンプ付きの WACZ ファイルの生成と検証に使える。署名は
+`authsign` サーバに API で接続して行い、検証は CLI から直接行える。
 
-* The [ArchiveWeb.page](https://archiveweb.page) extension produces signed WACZ
-files with an anonymous `signedData`. The publicKey is not yet distributed
-outside the extension.
+* [ArchiveWeb.page](https://archiveweb.page) 拡張機能は、匿名の `signedData` を
+持つ署名付き WACZ ファイルを生成する。publicKey は拡張機能の外にはまだ配布されて
+いない。
 
     </section>
     <section data-format="markdown">
 
 # Acknowledgments
 
-The development of this specification was supported by and developed in
-collaboration with Harvard Law Library Innovation Lab (Harvard LIL).
+この仕様の策定は Harvard Law Library Innovation Lab (Harvard LIL) の支援を受け、
+同ラボとの協働によって行われた。
 
     </section>
 
