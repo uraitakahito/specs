@@ -264,7 +264,7 @@ indexes
 </pre>
 
 WACZ の作成者性 (authorship) を主張・証明するために `datapackage-digest.json` に
-暗号学的署名を記録する方法については、[WACZ Signing and Verification](/wacz-auth/latest/)
+暗号学的署名を記録する方法については、[WACZ Signing and Verification](../../wacz-auth/latest/)
 を参照のこと。
 
 ### Other files and directories
