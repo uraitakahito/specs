@@ -25,23 +25,45 @@ jobs:
           # 作るより読んで分かるほうが得。足し忘れても「新しいページが検査され
           # ない」だけで、既存の検査は壊れない。
           PAGES="/ /wacz/1.1.1/ /wacz/1.2.0/ /wacz-auth/0.1.0/ /cdxj/0.1.0/ /use-cases/0.1.0/ /wacz-ipfs/latest/"
-          FAIL=0
-          for P in $PAGES; do
-            HTML=$(curl -fsSL --retry 3 --retry-delay 5 "$BASE$P") || {
-              echo "::error::$P is not reachable"; FAIL=1; continue; }
-            # src= / href= に加えて respecConfig の `src: "..."` も拾う。ロゴは
-            # 属性ではなく JS の設定値として書かれていて、そこが 404 だった。
-            REFS=$(printf '%s' "$HTML" \
-              | grep -oE '(src|href)="[^"]*"|src: "[^"]*"' \
-              | sed -E 's/^(src|href)[:=] ?"//; s/"$//' \
-              | grep -vE '^(https?:|#|mailto:|data:|$)' | sort -u)
-            for R in $REFS; do
-              U=$(python3 -c "import urllib.parse,sys;print(urllib.parse.urljoin('$BASE$P',sys.argv[1]))" "$R")
-              C=$(curl -s -o /dev/null -w '%{http_code}' "$U")
-              if [ "$C" != "200" ]; then
-                echo "::error::$P references $R -> $U ($C)"
-                FAIL=1
-              fi
+
+          # publish-ja が gh-pages へ push し終えても、Pages 側の配信が切り替わる
+          # までに 1 分ほどかかる。workflow_run はその前に発火するので、一度きり
+          # の判定にすると毎回「直前の内容」を見て落ちる (実際に初回がそうなった)。
+          # 全体を数回やり直し、通ったら即抜ける。本当に壊れていれば全回落ちるので
+          # 検出力は落ちない。
+          ATTEMPTS=6
+          DELAY=30
+
+          scan() {  # 見つけた問題を 1 行ずつ stdout へ。何も出なければ健全。
+            for P in $PAGES; do
+              HTML=$(curl -fsSL --retry 2 --retry-delay 3 "$BASE$P") || {
+                echo "$P is not reachable"; continue; }
+              # src= / href= に加えて respecConfig の `src: "..."` も拾う。ロゴは
+              # 属性ではなく JS の設定値として書かれていて、そこが 404 だった。
+              REFS=$(printf '%s' "$HTML" \
+                | grep -oE '(src|href)="[^"]*"|src: "[^"]*"' \
+                | sed -E 's/^(src|href)[:=] ?"//; s/"$//' \
+                | grep -vE '^(https?:|#|mailto:|data:|$)' | sort -u)
+              for R in $REFS; do
+                U=$(python3 -c "import urllib.parse,sys;print(urllib.parse.urljoin('$BASE$P',sys.argv[1]))" "$R")
+                C=$(curl -s -o /dev/null -w '%{http_code}' "$U")
+                [ "$C" = "200" ] || echo "$P references $R -> $U ($C)"
+              done
             done
+          }
+
+          for i in $(seq 1 $ATTEMPTS); do
+            PROBLEMS=$(scan)
+            if [ -z "$PROBLEMS" ]; then
+              echo "attempt $i/$ATTEMPTS: every in-site reference resolves"
+              exit 0
+            fi
+            if [ "$i" -lt "$ATTEMPTS" ]; then
+              echo "attempt $i/$ATTEMPTS found problems; Pages may still be deploying, retrying in ${DELAY}s"
+              echo "$PROBLEMS" | sed 's/^/  /'
+              sleep $DELAY
+            else
+              echo "$PROBLEMS" | while read -r L; do echo "::error::$L"; done
+              exit 1
+            fi
           done
-          exit $FAIL
