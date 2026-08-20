@@ -1,0 +1,47 @@
+name: linkcheck
+
+# 公開された実物を叩いてサイト内参照の死活を見る。
+#
+# ローカルのファイル同士を突き合わせるのではなく deploy 済みの URL を引くのは、
+# このリポジトリが実際に踏んだ壊れ方がそこにしか現れないため: index.html が
+# ReSpec を `../../assets/js/` から読んでいて、本家 (ドメイン直下) では
+# remove_dot_segments に潰されて偶然当たり、fork (/specs/ 配下) ではサイトの
+# 外を指して 404 になっていた。同じ HTML が置き場所によって当たったり外れたり
+# するので、置いてから引くまでやらないと判定できない。
+on:
+  workflow_run:
+    workflows: [publish-ja]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve every in-site reference on every page
+        run: |
+          BASE=https://uraitakahito.github.io/specs
+          # 明示列挙。仕様は年に数回しか増えないので、gh-pages を走査する仕掛けを
+          # 作るより読んで分かるほうが得。足し忘れても「新しいページが検査され
+          # ない」だけで、既存の検査は壊れない。
+          PAGES="/ /wacz/1.1.1/ /wacz/1.2.0/ /wacz-auth/0.1.0/ /cdxj/0.1.0/ /use-cases/0.1.0/ /wacz-ipfs/latest/"
+          FAIL=0
+          for P in $PAGES; do
+            HTML=$(curl -fsSL --retry 3 --retry-delay 5 "$BASE$P") || {
+              echo "::error::$P is not reachable"; FAIL=1; continue; }
+            # src= / href= に加えて respecConfig の `src: "..."` も拾う。ロゴは
+            # 属性ではなく JS の設定値として書かれていて、そこが 404 だった。
+            REFS=$(printf '%s' "$HTML" \
+              | grep -oE '(src|href)="[^"]*"|src: "[^"]*"' \
+              | sed -E 's/^(src|href)[:=] ?"//; s/"$//' \
+              | grep -vE '^(https?:|#|mailto:|data:|$)' | sort -u)
+            for R in $REFS; do
+              U=$(python3 -c "import urllib.parse,sys;print(urllib.parse.urljoin('$BASE$P',sys.argv[1]))" "$R")
+              C=$(curl -s -o /dev/null -w '%{http_code}' "$U")
+              if [ "$C" != "200" ]; then
+                echo "::error::$P references $R -> $U ($C)"
+                FAIL=1
+              fi
+            done
+          done
+          exit $FAIL
